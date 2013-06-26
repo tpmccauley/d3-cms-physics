@@ -70,7 +70,7 @@ function title(d,t) {
   d = parseDate(d);
   t = t.split(" ");
 		
-  var l = 6;
+  var l = 5; // This is the number of "words" displayed in the title
   var s = t[0];
   for (var i = 1; i <= l; i++ ) {
      s += " "+t[i];
