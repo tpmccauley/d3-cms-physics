@@ -31,8 +31,8 @@ var start_date = new Date(2010,0,0),
     end_date = new Date(),
     mid_date = new Date(0.5*(end_date.getTime()+start_date.getTime()));
  
-var m = {top:50, right:50, bottom:70, left:50},
-    w = 800 - m.right - m.left,
+var m = {top:50, right:50, bottom:70, left:70},
+    w = 700 - m.right - m.left,
     h = 600 - m.top - m.bottom,
     x = d3.time.scale().domain([start_date,end_date]).range([0,w]),
     y = d3.scale.linear().range([h,0]),
