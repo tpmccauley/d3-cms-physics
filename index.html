@@ -1,0 +1,68 @@
+<html>
+
+<head>
+<!-- thomas.mccauley@cern.ch -->
+<title>CMS Physics Timeline</title>
+<script type="text/javascript" src="./js/modernizr.custom.57713.js"></script>
+<script type="text/javascript" src="./js/jquery-1.6.1.min.js"></script>
+<script type="text/javascript" src="./js/d3.v2.min.js"></script>
+<script type="text/javascript" src="./data/papers.js"></script>
+
+<link type="text/css" href="./css/cmsphysics.css" rel="stylesheet">
+
+<script type="text/javascript">
+ if (!Modernizr.svg){
+  $(document).ready(function () {
+     $("svg").remove();
+     $("div").remove(".svg");
+   });
+ } else {
+   $(document).ready(function () {
+     $("div").remove(".nosvg");
+   });
+ }
+</script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-15537867-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<div class="nosvg">
+  <p class="instr">Sorry, but your browser does not appear to support SVG.</p>
+  <p class="instr">Please go to the <a href="https://twiki.cern.ch/twiki/bin/view/CMSPublic/PhysicsResults">CMS Physics Results page</a> instead.</p>
+  <p class="instr">Alternatively, you could try to visit this page via Firefox, Chrome, or Safari.</p>
+</div>
+<div id="controls" class="svg">
+<p>
+<button onclick="show_all();">Show all</button>
+<button onclick="show_total();">Total</button>
+<button id="qcd" onclick="show_qcd();">QCD</button>
+<button id="exo" onclick="show_exo();">Exotica Searches</button>
+<button id="sus" onclick="show_sus();">Supersymmetry</button>
+<button id="bph" onclick="show_bph();">B Physics</button>
+<button id="ewk" onclick="show_ewk();">Electroweak</button>
+</p>
+<p>
+<button id="top" onclick="show_top();">Top Physics</button>
+<button id="hin" onclick="show_hin();">Heavy Ion</button>
+<button id="hig" onclick="show_hig();">Higgs</button>
+<button id="fwd" onclick="show_fwd();">Forward Physics</button>
+<button id="smp" onclick="show_smp();">Standard Model</button>
+<button id="b2g" onclick="show_b2g();">Beyond the SM: B2G</button>
+</p>
+</div>
+<div id="numbers" class="svg">
+   <span id="number"></span>
+   papers published
+</div>
+<script type="text/javascript" src="./js/cmsphysics.js"></script>
+</body>
+</html>
