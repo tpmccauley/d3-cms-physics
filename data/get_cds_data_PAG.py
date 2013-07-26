@@ -15,11 +15,6 @@ pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
         'FWD','SUS','BPH',
         'SMP', 'FSQ', 'B2G']
-
-"""
-pags = ['EWK', 'HIG']
-"""
-
 arxivs = []
 
 cds_url = "http://cdsweb.cern.ch"
@@ -40,6 +35,21 @@ for pag in pags:
         date = result["269__c"][0]
         url = cds_url + '/record/' + result["001__"][0]
 
+        journal = ""
+
+        if result.has_key('773__'):
+            if len(result["773__p"]) == 1: # name
+                journal += result["773__p"][0] + " "
+
+            if len(result["773__v"]) == 1: # volume
+                journal += result["773__v"][0] + " "            
+            
+            if len(result["773__y"]) == 1: # year
+                journal += "(" + result["773__y"][0] + ") "
+
+            if len(result["773__c"]) == 1: # pages
+                journal += result["773__c"][0]
+    
         arxiv = result["037__a"][0]
         
         if arxivs.count(arxiv) == 1:
@@ -71,4 +81,3 @@ ofile.write(oline)
 ofile.close()
 
 print 'Results written to papers.js'
-
