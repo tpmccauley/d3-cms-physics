@@ -30,6 +30,8 @@ console.log("There are " + duplicates + " duplicates");
 var start_date = new Date(2010,0,0),
     end_date = new Date(),
     mid_date = new Date(0.5*(end_date.getTime()+start_date.getTime()));
+
+console.log(mid_date);
  
 var m = {top:50, right:50, bottom:70, left:70},
     w = 700 - m.right - m.left,
@@ -38,21 +40,7 @@ var m = {top:50, right:50, bottom:70, left:70},
     y = d3.scale.linear().range([h,0]),
     xaxis = d3.svg.axis().scale(x).orient("bottom").tickSize(5.0).tickSubdivide(false).tickFormat(d3.time.format("%b %Y")),
     yaxis = d3.svg.axis().scale(y).orient("left").tickSize(5.0).tickSubdivide(true).tickFormat(d3.format("d")),
-    svg, yrule, last_pag;
-
-function circle_mouseover() {
-  d3.select(this)
-  .transition()
-  .duration(500)
-  .attr("r", 20.0);
-}
-
-function circle_mouseout() {
-  d3.select(this)
-  .transition()
-  .duration(1000)
-  .attr("r", 8.0);
-}
+    svg, yrule;
 
 function text_mouseover() {
   d3.select(this)
@@ -66,11 +54,10 @@ function text_mouseout() {
 
 // TO-DO be a bit clever
 // about the text length
-function title(d,t) {
-  d = parseDate(d);
+function title(t) {
   t = t.split(" ");
 		
-  var l = 5; // This is the number of "words" displayed in the title
+  var l = 4; // This is the number of "words" displayed in the title
   var s = t[0];
   for (var i = 1; i <= l; i++ ) {
      s += " "+t[i];
@@ -82,65 +69,6 @@ var line = d3.svg.line()
         .x(function(d) {return x(parseDate(d.date));})
         .y(function(d,i) {return y(i+1);})
         .interpolate("linear");
-
-// Initialize axes and add add paths and circles to the DOM
-
-function add(class_name,data,length,text) {
-    
-    //console.log(class_name+' '+length+' '+text);
-
-     y.domain([0,length]);
-
-     svg.select("g.yrules").transition().duration(1000).call(y);
-
-     svg.append("path")
-         .attr("class", class_name)
-         .attr("d", line(data));
-
-     var circle = svg.selectAll("circle."+class_name)
-       .data(data)
-       .enter()
-       .append("a")
-       .attr("class", class_name)
-       .attr("xlink:href", function(d) {return d.url;})
-       .append("circle")
-       .attr("class", class_name)
-       .attr("cx", function(d) {return x(parseDate(d.date));})
-       .attr("cy", function(d,i) {return y(i+1);})
-       .attr("r", 8.0);  
-
-     circle.append("title")
-       .text(function(d) {return d.title;});
- 
-     circle.on("mouseover", circle_mouseover);
-     circle.on("mouseout", circle_mouseout); 
-
-     if ( text ) {
-
-     var text = svg.selectAll("text."+class_name)
-       .data(data)
-       .enter()
-       .append("a")
-       .attr("class", class_name)
-       .attr("xlink:href", function(d) {return d.url;})
-       .append("text")
-       .attr("class", class_name)
-       .attr("text-anchor", function(d) {if (parseDate(d.date) > mid_date) {return "end";} else {return "start";}})
-       .attr("x", function(d) {return x(parseDate(d.date));})
-       .attr("transform", function(d) {if (parseDate(d.date) > mid_date) {return "translate(-10)";} else {return "translate(10)";}})
-       .attr("y", function(d,i) {return y(i+1);})
-       .attr("dy", "0.3em")
-       .text(function(d) {return title(d.date,d.title);});
-
-     text.append("title")
-       .text(function(d) {return d.title;});
-
-     text.on("mouseover", text_mouseover);
-     text.on("mouseout", text_mouseout);   
-   }
-
-   $("."+class_name).hide();
-}
 
 function init() {
   svg = d3.select("body").append("svg")
@@ -165,134 +93,325 @@ function init() {
       });
     
   yrule = svg.selectAll("g.yrules").data(y.ticks(10));
+}
+ 
+function draw_total(data) {
+  remove_all();
 
-  // We add three plots to the DOM:
-  //  - The total number of papers (unsorted with no text)
-  //  - The total number of papers (sorted by PAG with no text)
-  //  - Each PAG with text (actually a plot each)
+  y.domain([0, data.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
 
-  add("total", papers, papers.length, false);
+  var path = svg.selectAll("path.total").data(data);
 
-  add("qcdall", qcds, max_length, false);
-  add("exoall", exos, max_length, false);
-  add("susall", suss, max_length, false);
-  add("bphall", bphs, max_length, false);
-  add("ewkall", ewks, max_length, false);
-  add("topall", tops, max_length, false);
-  add("hinall", hins, max_length, false);
-  add("higall", higs, max_length, false);
-  add("fwdall", fwds, max_length, false);
-  add("smpall", smps, max_length, false);
-  add("b2gall", b2gs, max_length, false);
+  path.enter()
+    .append("path")
+    .attr("class", "total")
+    .attr("d", line(data))
+    .attr("opacity", 1e-6)
+    .transition().delay(1000)
+    .attr("opacity", 1);
 
-  add("qcd", qcds, qcds.length, true);
-  add("exo", exos, exos.length, true);
-  add("sus", suss, suss.length, true);
-  add("bph", bphs, bphs.length, true);
-  add("ewk", ewks, ewks.length, true);
-  add("top", tops, tops.length, true);
-  add("hin", hins, hins.length, true);
-  add("hig", higs, higs.length, true);
-  add("fwd", fwds, fwds.length, true);
-  add("smp", smps, smps.length, true);
-  add("b2g", b2gs, b2gs.length, true);
+  var circle = svg.selectAll("circle").data(data);
+
+  circle.enter()
+    .append("circle")
+    .attr("class", "total")
+    .attr("cx", function(d) {return x(parseDate(d.date));})
+    .attr("cy", function(d,i) {return y(i+1);})
+    .attr("r", 1e-6)
+    .on("mouseover", function() {d3.select(this)
+      .transition()
+      .duration(500)
+      .attr("r", 20.0);})
+    .on("mouseout", function() {d3.select(this)
+      .transition()
+      .duration(1000)
+      .attr("r", 8.0);})
+    .transition().delay(1000)
+    .attr("r", 8.0)
+    .attr("title", function(d) {return d.title;});  
+
+  $("#number").text(data.length-duplicates);
+  $("#numbers").show();
 }
 
-// ACK! This is all very inelegant. Clean up when 
-// I have a chance.
-function hide_pags() {
-  $(".qcd").hide();
-  $(".bph").hide();
-  $(".ewk").hide();
-  $(".top").hide();
-  $(".hig").hide();
-  $(".sus").hide();
-  $(".exo").hide();
-  $(".hin").hide();
-  $(".fwd").hide();
-  $(".smp").hide();
-  $(".b2g").hide();
+function circle_mouseover() {
+  d3.select(this)
+  .transition()
+  .duration(500)
+  .attr("r", 20.0);
 }
 
-function hide_total() {
-  $("#number").hide();
-  $(".total").hide();
+function circle_mouseout() {
+  d3.select(this)
+  .transition()
+  .duration(1000)
+  .attr("r", 8.0);
 }
 
-function hide_all() {
-  $("#number").hide();
-  $(".qcdall").hide();
-  $(".bphall").hide();
-  $(".ewkall").hide();
-  $(".topall").hide();
-  $(".higall").hide();
-  $(".susall").hide();
-  $(".exoall").hide();
-  $(".hinall").hide();
-  $(".fwdall").hide();
-  $(".smpall").hide();
-  $(".b2gall").hide();
+function draw_all(data, class_name) {
+  svg.append("path")
+      .attr("class", "pag " + class_name)
+      .attr("d", line(data));
+
+  var circle = svg.selectAll("circle."+class_name)
+      .data(data)
+      .enter()
+      .append("a")
+      .attr("class", class_name)
+      .attr("xlink:href", function(d) {return d.url;})
+      .append("circle")
+      .attr("class", class_name)
+      .attr("cx", function(d) {return x(parseDate(d.date));})
+      .attr("cy", function(d,i) {return y(i+1);})
+      .attr("r", 8.0);  
+
+  circle.append("title")
+    .text(function(d) {return d.title;});
+ 
+  circle.on("mouseover", circle_mouseover);
+  circle.on("mouseout", circle_mouseout);
+}
+
+function draw_pag(data, class_name, show_text) {
+  var path = svg.selectAll("path.pag").data(data);
+
+  path.enter()
+    .append("path")
+    .attr("class", "pag " + class_name)
+    .attr("d", line(data))
+    .attr("opacity", 1e-6)
+    .transition().delay(500)
+    .attr("opacity", 1);
+  
+    /*
+  path.transition().delay(1000)
+    .attr("class", "pag " + class_name)
+    .attr("d", line(data))
+    .attr("opacity", 1);
+  
+  path.exit()
+    .transition().delay(1500)
+    .attr("opacity", 1e-6)
+    .remove();
+    */
+
+  if (show_text) {
+    var text = svg.selectAll("text.title").data(data);
+  
+    text.enter()
+      .append("a")
+      .attr("class", class_name)
+      .attr("xlink:href", function(d) {return d.url;})
+      .append("text")
+      .attr("class", "title " + class_name)
+      .attr("text-anchor", function(d) {
+        if (parseDate(d.date) > mid_date) {return "end";} else {return "start";}
+      })
+      .attr("x", function(d) {
+        if (parseDate(d.date) > mid_date) {
+          return x(parseDate(d.date))-10;
+        } else { 
+          return x(parseDate(d.date))+15; 
+        }
+      })
+      .attr("y", function(d,i) {return y(i+1)+5;})
+      .attr("opacity", 1e-6)
+      .on("mouseover", text_mouseover)
+      .on("mouseout", text_mouseout)
+      .attr("title", function(d) {return d.title;})
+      .transition().delay(1500)
+      .attr("opacity", 1)
+      .text(function(d,i) {return title(d.title);});
+
+      /*
+    text.transition().delay(1000)
+      .text(function(d,i) {return title(d.title);})
+      .attr("class", "title " + class_name)
+      .attr("text-anchor", function(d) {
+        if (parseDate(d.date) > mid_date) {return "end";} else {return "start";}
+      })
+      .attr("x", function(d) {
+        if (parseDate(d.date) > mid_date) {
+          return x(parseDate(d.date))-10;
+        } else { 
+          return x(parseDate(d.date))+10; 
+        }
+      })
+      .attr("y", function(d,i) {return y(i+1);})
+      .attr("opacity", 1);
+    
+    text.exit()
+      .transition().delay(1500)
+      .attr("opacity", 1e-6)
+      .remove();
+      */
+
+    //text.on("mouseover", text_mouseover)
+    //text.on("mouseout", text_mouseout)
+  }
+  
+  var circle = svg.selectAll("circle").data(data);
+
+  circle.enter()
+    .append("a")
+    .attr("class", class_name)
+    .attr("xlink:href", function(d) {return d.url;})
+    .append("circle")
+    .attr("class", class_name)
+    .attr("cx", function(d) {return x(parseDate(d.date));})
+    .attr("cy", function(d,i) {return y(i+1);})
+    .attr("r", 1e-6)
+    .on("mouseover", function() {d3.select(this)
+      .transition()
+      .duration(500)
+      .attr("r", 20.0);})
+    .on("mouseout", function() {d3.select(this)
+      .transition()
+      .duration(1000)
+      .attr("r", 8.0);})
+    .transition().delay(1000)
+    .attr("r", 8.0)
+    .attr("title", function(d) {return d.title;});  
+
+    /*
+  circle.transition().delay(1000)
+    .attr("cx", function(d) {return x(parseDate(d.date));})
+    .attr("cy", function(d,i) {return y(i+1);})
+    .attr("r", 8.0)
+    .attr("class", class_name)
+    .attr("title", function(d) {return d.title;});
+
+  circle.exit()
+    .transition().delay(1500)
+    .attr("r", 1e-6)
+    .remove();
+    */
+  
+  if (class_name == "total") {
+    $("#number").text(data.length - duplicates);
+  } else {
+   $("#number").text(data.length);
+  }
+  $("#numbers").show();
+}
+
+function remove_all() {
+  // Why do this and not follow the enter, update, exit
+  // pattern? We could, but "re-use" of the paths and
+  // circles has undesirable behavior: sometimes the 
+  // paths appear on top of the circles and sometimes
+  // under the circles (desired), sometimes in the same plot
+  svg.selectAll("path.pag").remove();
+  svg.selectAll("path.total").remove();
+  svg.selectAll("text.title").remove();
+  svg.selectAll("circle").remove();  
+}
+
+function show_total() { 
+  remove_all();
+  y.domain([0, papers.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(papers, "total", false); }
+
+function show_qcd() { 
+  remove_all(); 
+  y.domain([0, qcds.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(qcds, "qcd", true); 
+}
+
+function show_bph() { 
+  remove_all(); 
+  y.domain([0, bphs.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(bphs, "bph", true); 
+}
+
+function show_ewk() { 
+  remove_all(); 
+  y.domain([0, ewks.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(ewks, "ewk", true); 
+}
+
+function show_top() { 
+  remove_all(); 
+  y.domain([0, tops.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(tops, "top", true); 
+}
+
+function show_hig() { 
+  remove_all();
+  y.domain([0, higs.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis); 
+  draw_pag(higs, "hig", true); 
+}
+
+function show_sus() { 
+  remove_all(); 
+  y.domain([0, suss.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(suss, "sus", true);
+}
+
+function show_exo() {
+  remove_all(); 
+  y.domain([0, exos.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(exos, "exo", true);
+}
+
+function show_hin() { 
+  remove_all();
+  y.domain([0, hins.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis); 
+  draw_pag(hins, "hin", true); 
+}
+
+function show_fwd() { 
+  remove_all();
+  y.domain([0, fwds.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(fwds, "fwd", true);
+}
+
+function show_smp() { 
+  remove_all(); 
+  y.domain([0, smps.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(smps, "smp", true); 
+}
+
+function show_b2g() { 
+  remove_all(); 
+  y.domain([0, b2gs.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+  draw_pag(b2gs, "b2g", true); 
 }
 
 function show_all() {
-  y.domain([0,max_length]);
+  remove_all();
+  y.domain([0, max_length]);
   svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  hide_total();
-  hide_pags();
-  $("#number").text(papers.length - duplicates);
-  $("#numbers").show();
-  $("#number").show();
-  $(".qcdall").show();
-  $(".bphall").show();
-  $(".ewkall").show();
-  $(".topall").show();
-  $(".higall").show();
-  $(".susall").show();
-  $(".exoall").show();
-  $(".hinall").show();
-  $(".fwdall").show();
-  $(".smpall").show();
-  $(".b2gall").show();
+  
+  draw_all(qcds, "qcd"); 
+  draw_all(bphs, "bph");
+  draw_all(ewks, "ewk");
+  draw_all(tops, "top"); 
+  draw_all(higs, "hig"); 
+  draw_all(suss, "sus"); 
+  draw_all(exos, "exo"); 
+  draw_all(hins, "hin"); 
+  draw_all(fwds, "fwd"); 
+  draw_all(smps, "smp"); 
+  draw_all(b2gs, "b2g");
+
+  $("#number").text(papers.length-duplicates);
+  $("#numbers").show();  
 }
 
-function show_total() {
-  y.domain([0,papers.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  hide_all();
-  hide_pags();
-  $("#number").text(papers.length - duplicates);
-  $("#numbers").show();
-  $("#number").show();
-  $(".total").show();
-}
-
-function show_qcd() {draw("qcd", qcds.length); $("#numbers").hide();}
-function show_bph() {draw("bph", bphs.length); $("#numbers").hide();}
-function show_ewk() {draw("ewk", ewks.length); $("#numbers").hide();}
-function show_top() {draw("top", tops.length); $("#numbers").hide();}
-function show_hig() {draw("hig", higs.length); $("#numbers").hide();}
-function show_sus() {draw("sus", suss.length); $("#numbers").hide();}
-function show_exo() {draw("exo", exos.length); $("#numbers").hide();}
-function show_hin() {draw("hin", hins.length); $("#numbers").hide();}
-function show_fwd() {draw("fwd", fwds.length); $("#numbers").hide();}
-function show_smp() {draw("smp", smps.length); $("#numbers").hide();}
-function show_b2g() {draw("b2g", b2gs.length); $("#numbers").hide();}
-
-function draw(pag,length) {
-    hide_all();
-    hide_total();
-
-    y.domain([0,length]);
-    svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-
-    if (pag !== last_pag) {
-      $("."+last_pag).hide();
-    }
-
-    $("."+pag).show();
-    last_pag = pag;
-}
-
-// Initialize and show all by default
+// Initialize and show total
 init();
 show_all();
