@@ -4,34 +4,9 @@ function parseDate(d) {
   return new Date(s[2],s[1]-1,s[0]);
 }
 
-// Sort papers by date
-papers.sort(function(a,b) {
-  return (parseDate(a.date)) - (parseDate(b.date));
-});
-
-// Filter papers by PAG
-var qcds = papers.filter(function(p) {return p.type=="QCD";}),
-    bphs = papers.filter(function(p) {return p.type=="BPH";}),
-    ewks = papers.filter(function(p) {return p.type=="EWK";}),
-    tops = papers.filter(function(p) {return p.type=="TOP";}),
-    higs = papers.filter(function(p) {return p.type=="HIG";}),
-    suss = papers.filter(function(p) {return p.type=="SUS";}),
-    exos = papers.filter(function(p) {return p.type=="EXO";}),
-    hins = papers.filter(function(p) {return p.type=="HIN";}),
-    fwds = papers.filter(function(p) {return (p.type=="FWD" || p.type=="FSQ");}),
-    smps = papers.filter(function(p) {return p.type=="SMP";}),
-    b2gs = papers.filter(function(p) {return p.type=="B2G";});
-
-var max_length = d3.max([qcds,bphs,ewks,tops,higs,suss,exos,hins,fwds,smps,b2gs], function(p) {return p.length;});
-
-var duplicates = papers.filter(function(p) {return p.duplicate == "true";}).length
-console.log("There are " + duplicates + " duplicates");
-
 var start_date = new Date(2010,0,0),
     end_date = new Date(),
     mid_date = new Date(0.5*(end_date.getTime()+start_date.getTime()));
-
-console.log(mid_date);
  
 var m = {top:50, right:50, bottom:70, left:70},
     w = 700 - m.right - m.left,
@@ -40,7 +15,9 @@ var m = {top:50, right:50, bottom:70, left:70},
     y = d3.scale.linear().range([h,0]),
     xaxis = d3.svg.axis().scale(x).orient("bottom").tickSize(5.0).tickSubdivide(false).tickFormat(d3.time.format("%b %Y")),
     yaxis = d3.svg.axis().scale(y).orient("left").tickSize(5.0).tickSubdivide(true).tickFormat(d3.format("d")),
-    svg, yrule;
+    svg, yrule, max_length, papers_length, duplicates;
+
+var all_papers, qcds, bphs, ewks, tops, higs, suss, exos, hins, fwds, smps, b2gs;
 
 function text_mouseover() {
   d3.select(this)
@@ -52,11 +29,25 @@ function text_mouseout() {
   .attr("style", "fill:#666");
 }
 
+function circle_mouseover() {
+  d3.select(this)
+  .transition()
+  .duration(500)
+  .attr("r", 20.0);
+}
+
+function circle_mouseout() {
+  d3.select(this)
+  .transition()
+  .duration(1000)
+  .attr("r", 8.0);
+}
+
 // TO-DO be a bit clever
 // about the text length
 function title(t) {
   t = t.split(" ");
-		
+    
   var l = 4; // This is the number of "words" displayed in the title
   var s = t[0];
   for (var i = 1; i <= l; i++ ) {
@@ -66,10 +57,10 @@ function title(t) {
 }
 
 var line = d3.svg.line()
-        .x(function(d) {return x(parseDate(d.date));})
-        .y(function(d,i) {return y(i+1);})
-        .interpolate("linear");
-
+          .x(function(d) {return x(parseDate(d.date));})
+          .y(function(d,i) {return y(i+1);})
+          .interpolate("linear");
+ 
 function init() {
   svg = d3.select("body").append("svg")
     .attr("width", w+m.right+m.left)
@@ -80,12 +71,12 @@ function init() {
   // Add x and y axes
   svg.append("g")
     .attr("class", "yaxis")
-    .call(yaxis);	
+    .call(yaxis); 
 
   svg.append("g")
-  	.attr("class", "xaxis")
-  	.attr("transform", "translate(0,"+h+")")
-  	.call(xaxis)
+    .attr("class", "xaxis")
+    .attr("transform", "translate(0,"+h+")")
+    .call(xaxis)
       .selectAll("text")
       .style("text-anchor", "end")
       .attr("transform", function(d) {
@@ -94,7 +85,7 @@ function init() {
     
   yrule = svg.selectAll("g.yrules").data(y.ticks(10));
 }
- 
+
 function draw_total(data) {
   remove_all();
 
@@ -119,14 +110,8 @@ function draw_total(data) {
     .attr("cx", function(d) {return x(parseDate(d.date));})
     .attr("cy", function(d,i) {return y(i+1);})
     .attr("r", 1e-6)
-    .on("mouseover", function() {d3.select(this)
-      .transition()
-      .duration(500)
-      .attr("r", 20.0);})
-    .on("mouseout", function() {d3.select(this)
-      .transition()
-      .duration(1000)
-      .attr("r", 8.0);})
+    .on("mouseover", circle_mouseover)
+    .on("mouseout", circle_mouseout)
     .transition().delay(1000)
     .attr("r", 8.0)
     .attr("title", function(d) {return d.title;});  
@@ -135,21 +120,8 @@ function draw_total(data) {
   $("#numbers").show();
 }
 
-function circle_mouseover() {
-  d3.select(this)
-  .transition()
-  .duration(500)
-  .attr("r", 20.0);
-}
-
-function circle_mouseout() {
-  d3.select(this)
-  .transition()
-  .duration(1000)
-  .attr("r", 8.0);
-}
-
 function draw_all(data, class_name) {
+
   svg.append("path")
       .attr("class", "pag " + class_name)
       .attr("d", line(data));
@@ -174,6 +146,11 @@ function draw_all(data, class_name) {
 }
 
 function draw_pag(data, class_name, show_text) {
+
+  remove_all();
+  y.domain([0, data.length]);
+  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
+
   var path = svg.selectAll("path.pag").data(data);
 
   path.enter()
@@ -206,7 +183,11 @@ function draw_pag(data, class_name, show_text) {
       .append("text")
       .attr("class", "title " + class_name)
       .attr("text-anchor", function(d) {
-        if (parseDate(d.date) > mid_date) {return "end";} else {return "start";}
+        if (parseDate(d.date) > mid_date) {
+          return "end";
+        } else {
+          return "start";
+        }
       })
       .attr("x", function(d) {
         if (parseDate(d.date) > mid_date) {
@@ -229,7 +210,11 @@ function draw_pag(data, class_name, show_text) {
       .text(function(d,i) {return title(d.title);})
       .attr("class", "title " + class_name)
       .attr("text-anchor", function(d) {
-        if (parseDate(d.date) > mid_date) {return "end";} else {return "start";}
+        if (parseDate(d.date) > mid_date) {
+          return "end";
+        } else {
+          return "start";
+        }
       })
       .attr("x", function(d) {
         if (parseDate(d.date) > mid_date) {
@@ -262,14 +247,8 @@ function draw_pag(data, class_name, show_text) {
     .attr("cx", function(d) {return x(parseDate(d.date));})
     .attr("cy", function(d,i) {return y(i+1);})
     .attr("r", 1e-6)
-    .on("mouseover", function() {d3.select(this)
-      .transition()
-      .duration(500)
-      .attr("r", 20.0);})
-    .on("mouseout", function() {d3.select(this)
-      .transition()
-      .duration(1000)
-      .attr("r", 8.0);})
+    .on("mouseout", circle_mouseout)
+    .on("mouseover", circle_mouseover)
     .transition().delay(1000)
     .attr("r", 8.0)
     .attr("title", function(d) {return d.title;});  
@@ -308,88 +287,19 @@ function remove_all() {
   svg.selectAll("circle").remove();  
 }
 
-function show_total() { 
-  remove_all();
-  y.domain([0, papers.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(papers, "total", false); }
+function show_total() { draw_pag(all_papers, "total", false); }
 
-function show_qcd() { 
-  remove_all(); 
-  y.domain([0, qcds.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(qcds, "qcd", true); 
-}
-
-function show_bph() { 
-  remove_all(); 
-  y.domain([0, bphs.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(bphs, "bph", true); 
-}
-
-function show_ewk() { 
-  remove_all(); 
-  y.domain([0, ewks.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(ewks, "ewk", true); 
-}
-
-function show_top() { 
-  remove_all(); 
-  y.domain([0, tops.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(tops, "top", true); 
-}
-
-function show_hig() { 
-  remove_all();
-  y.domain([0, higs.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis); 
-  draw_pag(higs, "hig", true); 
-}
-
-function show_sus() { 
-  remove_all(); 
-  y.domain([0, suss.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(suss, "sus", true);
-}
-
-function show_exo() {
-  remove_all(); 
-  y.domain([0, exos.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(exos, "exo", true);
-}
-
-function show_hin() { 
-  remove_all();
-  y.domain([0, hins.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis); 
-  draw_pag(hins, "hin", true); 
-}
-
-function show_fwd() { 
-  remove_all();
-  y.domain([0, fwds.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(fwds, "fwd", true);
-}
-
-function show_smp() { 
-  remove_all(); 
-  y.domain([0, smps.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(smps, "smp", true); 
-}
-
-function show_b2g() { 
-  remove_all(); 
-  y.domain([0, b2gs.length]);
-  svg.select("g.yaxis").transition().duration(1000).call(yaxis);
-  draw_pag(b2gs, "b2g", true); 
-}
+function show_qcd() { draw_pag(qcds, "qcd", true); }
+function show_bph() { draw_pag(bphs, "bph", true); }
+function show_ewk() { draw_pag(ewks, "ewk", true); }
+function show_top() { draw_pag(tops, "top", true); }
+function show_hig() { draw_pag(higs, "hig", true); }
+function show_sus() { draw_pag(suss, "sus", true); }
+function show_exo() { draw_pag(exos, "exo", true); }
+function show_hin() { draw_pag(hins, "hin", true); }
+function show_fwd() { draw_pag(fwds, "fwd", true); }
+function show_smp() { draw_pag(smps, "smp", true); }
+function show_b2g() { draw_pag(b2gs, "b2g", true); }
 
 function show_all() {
   remove_all();
@@ -408,10 +318,36 @@ function show_all() {
   draw_all(smps, "smp"); 
   draw_all(b2gs, "b2g");
 
-  $("#number").text(papers.length-duplicates);
+  $("#number").text(papers_length - duplicates);
   $("#numbers").show();  
 }
 
-// Initialize and show total
-init();
-show_all();
+d3.json("../data/papers.json", function(papers) {
+
+  // Sort papers by date
+  papers.sort(function(a,b) {
+    return (parseDate(a.date)) - (parseDate(b.date));
+  });
+
+  all_papers = papers;
+
+  papers_length = papers.length;
+
+  qcds = papers.filter(function(p) {return p.type=="QCD";}),
+  bphs = papers.filter(function(p) {return p.type=="BPH";}),
+  ewks = papers.filter(function(p) {return p.type=="EWK";}),
+  tops = papers.filter(function(p) {return p.type=="TOP";}),
+  higs = papers.filter(function(p) {return p.type=="HIG";}),
+  suss = papers.filter(function(p) {return p.type=="SUS";}),
+  exos = papers.filter(function(p) {return p.type=="EXO";}),
+  hins = papers.filter(function(p) {return p.type=="HIN";}),
+  fwds = papers.filter(function(p) {return (p.type=="FWD" || p.type=="FSQ");}),
+  smps = papers.filter(function(p) {return p.type=="SMP";}),
+  b2gs = papers.filter(function(p) {return p.type=="B2G";});
+
+  max_length = d3.max([qcds,bphs,ewks,tops,higs,suss,exos,hins,fwds,smps,b2gs], function(p) {return p.length;});
+  duplicates = papers.filter(function(p) {return p.duplicate == "true";}).length
+
+  init();
+  show_all();
+});

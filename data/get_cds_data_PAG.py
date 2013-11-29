@@ -7,9 +7,9 @@ month = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,
          'May':5,'Jun':6,'Jul':7,'Aug':8,
          'Sep':9,'Oct':10,'Nov':11,'Dec':12}
 
-ofile_name = 'papers.js'
+ofile_name = 'papers.json'
 ofile = open(ofile_name, 'w')
-oline = 'var papers=['
+oline = '['
 
 pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
@@ -76,8 +76,8 @@ print total, 'papers in total'
 print len(arxivs) 
 
 oline = oline[:-1]
-oline += '];'
+oline += ']'
 ofile.write(oline)
 ofile.close()
 
-print 'Results written to papers.js'
+print 'Results written to papers.json'
