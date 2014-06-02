@@ -30,12 +30,28 @@ for pag in pags:
 
     for result in results:
         obj = {}
-        
-        title = result["245__a"][0]
-        date = result["269__c"][0]
-        url = cds_url + '/record/' + result["001__"][0]
 
-        journal = ""
+       	title = ''
+       	date = ''
+       	url = ''
+
+       	if result.has_key('245__a'):
+            title = result["245__a"][0]
+        else:
+            print 'not title?!'
+
+        if result.has_key('269__c'):
+            date = result["269__c"][0]
+        else:
+            print 'no date?!'
+
+        if result.has_key('001__'):	
+            url = cds_url + '/record/' + result["001__"][0]
+            print url
+        else:
+            print 'no url!?'
+
+        journal = ''
 
         if result.has_key('773__'):
             if len(result["773__p"]) == 1: # name
@@ -50,19 +66,26 @@ for pag in pags:
             if len(result["773__c"]) == 1: # pages
                 journal += result["773__c"][0]
     
-        arxiv = result["037__a"][0]
+        if result.has_key('037__a'):
+            arxiv = result["037__a"][0]
         
-        if arxivs.count(arxiv) == 1:
-            print 'Found a duplicate!', arxiv, url
-            obj['duplicate'] = 'true'
+            if arxivs.count(arxiv) == 1:
+                print 'Found a duplicate!', arxiv, url
+                obj['duplicate'] = 'true'
+            else:
+                arxivs.append(arxiv)
+                obj['duplicate'] = 'false'
         else:
-            arxivs.append(arxiv)
-            obj['duplicate'] = 'false'
+            print 'no arxiv!?'
 
         try:
             obj['title'] = str(title)
         except UnicodeEncodeError:
             obj['title'] = unicodedata.normalize('NFKD',title)
+
+        if len(date) == 0:
+            print 'date is not found'
+            continue
 
         d = string.split(str(date))
 
