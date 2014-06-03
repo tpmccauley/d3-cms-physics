@@ -2,6 +2,9 @@ from invenio_connector import *
 import json
 import string
 import unicodedata
+import sys
+
+debug = False
 
 month = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,
          'May':5,'Jun':6,'Jul':7,'Aug':8,
@@ -15,6 +18,7 @@ pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
         'FWD','SUS','BPH',
         'SMP', 'FSQ', 'B2G']
+
 arxivs = []
 
 cds_url = "http://cdsweb.cern.ch"
@@ -23,7 +27,7 @@ cds = InvenioConnector(cds_url)
 total = 0
 
 for pag in pags:
-    results = cds.search(pag,c="CMS Papers",f="reportnumber",rg="100")
+    results = cds.search(p=pag,c="CMS Papers",f="reportnumber",rg="1000")
 
     print 'There are', len(results), pag+' papers'
     total += len(results)
@@ -31,29 +35,19 @@ for pag in pags:
     for result in results:
         obj = {}
 
-       	title = ''
-       	date = ''
-       	url = ''
+        if debug:
+            for r in result:
+                if r == '700__' or r == '8564_':
+                    continue
+                print r, result[r]
 
-       	if result.has_key('245__a'):
-            title = result["245__a"][0]
-        else:
-            print 'not title?!'
-
-        if result.has_key('269__c'):
-            date = result["269__c"][0]
-        else:
-            print 'no date?!'
-
-        if result.has_key('001__'):	
-            url = cds_url + '/record/' + result["001__"][0]
-            print url
-        else:
-            print 'no url!?'
+        title = result["245__a"][0]
+        date = result["269__c"][0]	
+        url = cds_url + '/record/' + result["001__"][0]
 
         journal = ''
 
-        if result.has_key('773__'):
+        try:
             if len(result["773__p"]) == 1: # name
                 journal += result["773__p"][0] + " "
 
@@ -65,31 +59,36 @@ for pag in pags:
 
             if len(result["773__c"]) == 1: # pages
                 journal += result["773__c"][0]
-    
-        if result.has_key('037__a'):
+        except KeyError:
+            if debug:
+                print 'no journal record 773__', title
+
+        try:
             arxiv = result["037__a"][0]
-        
+
             if arxivs.count(arxiv) == 1:
                 print 'Found a duplicate!', arxiv, url
                 obj['duplicate'] = 'true'
             else:
                 arxivs.append(arxiv)
                 obj['duplicate'] = 'false'
-        else:
-            print 'no arxiv!?'
+        except KeyError:
+            if debug:
+                print 'no arxiv 037__a', title
+            obj['duplicate'] = 'false'
 
         try:
             obj['title'] = str(title)
         except UnicodeEncodeError:
             obj['title'] = unicodedata.normalize('NFKD',title)
 
-        if len(date) == 0:
-            print 'date is not found'
-            continue
-
         d = string.split(str(date))
 
-        obj['date'] = d[0]+'-'+str(month[d[1]])+'-'+d[2]
+        try:
+            obj['date'] = d[0]+'-'+str(month[d[1]])+'-'+d[2]
+        except KeyError:
+            obj['date'] = d[0]+'-'+str(int(d[1]))+'-'+d[2]
+
         obj['url'] = str(url)
         obj['type'] = str(pag)
 
@@ -97,6 +96,19 @@ for pag in pags:
 
 print total, 'papers in total'
 print len(arxivs) 
+print '+1 HIG paper (the Science paper)'
+
+# What's this?
+# Well, the Higgs Science paper does not seem to have a 
+# full record and is missing a proper date, PAG code, and arxiv.
+# So for now, add it by-hand.
+sci = {}
+sci['title'] = 'A New Boson with a Mass of 125 GeV Observed with the CMS Experiment at the Large Hadron Collider'
+sci['date'] = '21-12-2012'
+sci['url'] = 'https://cds.cern.ch/record/1529911/'
+sci['type'] = 'HIG'
+sci['duplicate'] = 'false'
+oline += str(json.dumps(sci,sort_keys=True))+','
 
 oline = oline[:-1]
 oline += ']'
