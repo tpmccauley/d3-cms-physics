@@ -3,12 +3,19 @@ import json
 import string
 import unicodedata
 import sys
+from time import gmtime, strftime
 
 debug = False
 
 month = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,
          'May':5,'Jun':6,'Jul':7,'Aug':8,
          'Sep':9,'Oct':10,'Nov':11,'Dec':12}
+
+# Get time and date and output to file
+dfile = open('date.json', 'w')
+date = {'Y': strftime('%Y'), 'm' : strftime('%m'), 'D': strftime('%d')}
+dfile.write(str(json.dumps(date,sort_keys=False)))
+dfile.close()
 
 ofile_name = 'papers.json'
 ofile = open(ofile_name, 'w')

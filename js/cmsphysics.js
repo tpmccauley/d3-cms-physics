@@ -4,6 +4,11 @@ function parseDate(d) {
   return new Date(s[2],s[1]-1,s[0]);
 }
 
+var date_updated;
+d3.json("../data/date.json", function(date) {
+	date_updated = date.Y + "-" + date.M + "-" + date.D;
+})
+
 var start_date = new Date(2010,0,0),
     end_date = new Date(),
     mid_date = new Date(0.5*(end_date.getTime()+start_date.getTime()));
@@ -319,6 +324,7 @@ function show_all() {
   draw_all(b2gs, "b2g");
 
   $("#number").text(papers_length - duplicates);
+  $("#date").text(date_updated);
   $("#numbers").show();  
 }
 
