@@ -94,7 +94,14 @@ for pag in pags:
         try:
             obj['date'] = d[0]+'-'+str(month[d[1]])+'-'+d[2]
         except KeyError:
+            print 'Caught KeyError with', date, 'but all is well!'
             obj['date'] = d[0]+'-'+str(int(d[1]))+'-'+d[2]
+        except IndexError:
+            # good grief, why is the date format not the same?
+            print 'Caught IndexError with', date, 'but all is well!'
+            d = string.split(str(date), '-')
+            m = int(d[1])
+            obj['date'] = d[0]+'-'+str(m)+'-'+d[2]
 
         obj['url'] = str(url)
         obj['type'] = str(pag)
