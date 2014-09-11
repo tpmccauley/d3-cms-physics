@@ -13,7 +13,7 @@ month = {'Jan':1,'Feb':2,'Mar':3,'Apr':4,
 
 # Get time and date and output to file
 dfile = open('date.json', 'w')
-date = {'Y': strftime('%Y'), 'm' : strftime('%m'), 'D': strftime('%d')}
+date = {'Y': strftime('%Y'), 'M' : strftime('%m'), 'D': strftime('%d')}
 dfile.write(str(json.dumps(date,sort_keys=False)))
 dfile.close()
 
@@ -49,7 +49,7 @@ for pag in pags:
                 print r, result[r]
 
         title = result["245__a"][0]
-        date = result["269__c"][0]	
+        date = result["269__c"][0]
         url = cds_url + '/record/' + result["001__"][0]
 
         journal = ''
@@ -59,8 +59,8 @@ for pag in pags:
                 journal += result["773__p"][0] + " "
 
             if len(result["773__v"]) == 1: # volume
-                journal += result["773__v"][0] + " "            
-            
+                journal += result["773__v"][0] + " "
+
             if len(result["773__y"]) == 1: # year
                 journal += "(" + result["773__y"][0] + ") "
 
@@ -109,11 +109,11 @@ for pag in pags:
         oline += str(json.dumps(obj,sort_keys=True))+','
 
 print total, 'papers in total'
-print len(arxivs) 
+print len(arxivs)
 print '+1 HIG paper (the Science paper)'
 
 # What's this?
-# Well, the Higgs Science paper does not seem to have a 
+# Well, the Higgs Science paper does not seem to have a
 # full record and is missing a proper date, PAG code, and arxiv.
 # So for now, add it by-hand.
 sci = {}
