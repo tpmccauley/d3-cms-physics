@@ -7,8 +7,8 @@ How?
 
 * First one must fetch the paper data from the CERN Document Server using ./data/get_cds_data_PAG.py
 (which uses invenio_connector.py): "python get_cds_data_PAG.py" 
-* The paper data is output to papers.json
-* This data is then read in and rendered using d3
+* The paper data are output to papers.json
+* This data are then read in and rendered using d3
 
 Links:
 * http://cern.ch/cms
