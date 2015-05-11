@@ -2,24 +2,28 @@ body {
   font: bold 12px Helvetica;
 }
 
-.yaxis text {
+.bordered {
+  border: thin solid gray;
+}
+
+#controls {
+  margin-left: 150px;
+}
+
+#numbers {
+  padding-left: 150px;
   font: bold 14px Helvetica;
 }
 
-.xaxis text {
-  font: bold 12px Helvetica;
-}
-
-p.instr {
-  font: bold 12px Helvetica;
-}
-
-text.qcd, text.exo, text.sus,
-text.bph, text.ewk, text.top,
+text.sus, text.bph, text.top,
 text.hin, text.hig, text.fwd,
 text.smp, text.b2g {
  fill: #666;
- font: bold 12px Helvetica;
+}
+
+text.exo, text.smp {
+  fill: #666;
+  font: bold 8px Helvetica;
 }
 
 circle.total, #total {
@@ -34,13 +38,13 @@ path.total {
   stroke: #ccc;
 }
 
-circle.qcd, circle.qcdall, #qcd {
+circle.smp, circle.smpall, #smp {
   fill: #aec7e8;
   stroke: #1f77b4;
   color: #1f77b4;
 }
 
-path.qcd, path.qcdall {
+path.smp, path.smpall {
   fill:none;
   stroke-width: 2;
   stroke: #aec7e8;
@@ -61,13 +65,13 @@ path.exo, path.exoall {
 circle.sus, circle.susall, #sus {
   fill: #98df8a;
   stroke: #2ca02c;
-  color: #2ca02c; 
+  color: #2ca02c;
 }
 
 path.sus, path.susall {
   fill:none;
   stroke-width: 2;
-  stroke: #98df8a; 
+  stroke: #98df8a;
 }
 
 circle.bph, circle.bphall, #bph {
@@ -79,120 +83,72 @@ circle.bph, circle.bphall, #bph {
 path.bph, path.bphall {
   fill:none;
   stroke-width: 2;
-  stroke: #ff9896; 
+  stroke: #ff9896;
 }
 
-circle.ewk, circle.ewkall, #ewk {
+circle.top, circle.topall, #top {
   fill: #c5b0d5;
   stroke: #9467bd;
   color: #9467bd;
 }
 
-path.ewk, path.ewkall {
+path.top, path.topall {
   fill:none;
   stroke-width: 2;
   stroke: #c5b0d5;
 }
 
-circle.top, circle.topall, #top {
+circle.hin, circle.hinall, #hin {
   fill: #c49c94;
   stroke: #8c564b;
-  color:#8c564b; 
-}
-
-path.top, path.topall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #c49c94;
-}
-
-circle.hin, circle.hinall, #hin {
-  fill: #f7b6d2;
-  stroke: #e377c2;
-  color: #e377c2;
+  color: #8c564b;
 }
 
 path.hin, path.hinall {
   fill:none;
   stroke-width: 2;
-  stroke: #f7b6d2; 
+  stroke: #c49c94;
 }
 
 circle.hig, circle.higall, #hig {
-  fill: #c7c7c7;
-  stroke: #7f7f7f;
-  color:#7f7f7f; 
+  fill: #f7b6d2;
+  stroke: #e377c2;
+  color:#e377c2;
 }
 
 path.hig, path.higall {
   fill:none;
   stroke-width: 2;
-  stroke: #c7c7c7; 
+  stroke: #f7b6d2;
 }
 
 circle.fwd, circle.fwdall, #fwd {
-  fill: #dbdb8d;
-  stroke: #bcbd22;
-  color: #bcbd22;
+  fill: #c7c7c7;
+  stroke: #7f7f7f;
+  color: #7f7f7f;
 }
 
 path.fwd, path.fwdall {
   fill:none;
   stroke-width: 2;
-  stroke: #dbdb8d;
-} 
-
-circle.smp, circle.smpall, #smp {
-  fill: #9edae5;
-  stroke: #17becf;
-  color: #17becf;
-}
-
-path.smp, path.smpall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #9edae5;
+  stroke: #c7c7c7;
 }
 
 circle.b2g, circle.b2gall, #b2g {
-  fill: #9c9ede;
-  stroke: #5254a3;
-  color: #5254a3;
+  fill: #dbdb8d;
+  stroke: #bcbd22;
+  color: #bcbd22;
 }
 
 path.b2g, path.b2gall {
   fill:none;
-  stroke-width:2;
-  stroke:#9c9ede;
+  stroke-width: 2;
+  stroke: #dbdb8d;
 }
 
-#controls {
-  height: 80;
-  width: 700;
-  float: top;
-  padding-left: 50;
-}
-
-button {
+.btn {
   font: bold 14px Helvetica;
-  background-color: #d9d9d9;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#e4e4e4));
-  background-image: -webkit-linear-gradient(top, from(#f9f9f9), to(#e4e4e4)); 
-  background-image:    -moz-linear-gradient(top, #f9f9f9, #e4e4e4); 
-  background-image:     -ms-linear-gradient(top, #f9f9f9, #e4e4e4); 
-  background-image:      -o-linear-gradient(top, #f9f9f9, #e4e4e4); 
-  background-image:         linear-gradient(top, #f9f9f9, #e4e4e4);
-  text-shadow: 0 1px 1px #fff;
-  border: 1px solid #d6d6d6;
-}
-
-button:hover {
-  border: 1px solid #858585;
-}
-
-#numbers {
-	padding-left: 250px;
-	font: bold 14px Helvetica;
+  background-color: #f9f9f9;
 }
 
 .yaxis path, .xaxis path,
