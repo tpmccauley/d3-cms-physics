@@ -5,7 +5,7 @@ function parseDate(d) {
 }
 
 var date_updated;
-d3.json('../data/date.json', function(date) {
+d3.json('./data/date.json', function(date) {
 	date_updated = date.Y + '-' + date.M + '-' + date.D;
 })
 
@@ -14,8 +14,8 @@ var start_date = new Date(2010,0,0),
     mid_date = new Date(0.5*(end_date.getTime()+start_date.getTime()));
 
 var m = {top:50, right:50, bottom:75, left:50},
-    w = 800 - m.right - m.left,
-    h = 650 - m.top - m.bottom,
+    w = 700 - m.right - m.left,
+    h = 600 - m.top - m.bottom,
     x = d3.time.scale().domain([start_date,end_date]).range([0,w]),
     y = d3.scale.linear().range([h,0]),
     xaxis = d3.svg.axis().scale(x).orient('bottom').tickSize(5.0).tickSubdivide(false).tickFormat(d3.time.format('%b %Y')),
@@ -186,6 +186,7 @@ function draw_pag(data, class_name, show_text) {
     text.enter()
       .append('a')
       .attr('class', class_name)
+      .attr('target', '_blank')
       .attr('xlink:href', function(d) {return d.url;})
       .append('text')
       .attr('class', 'title ' + class_name)
@@ -198,9 +199,9 @@ function draw_pag(data, class_name, show_text) {
       })
       .attr('x', function(d) {
         if (parseDate(d.date) > mid_date) {
-          return x(parseDate(d.date))-10;
+          return x(parseDate(d.date))-25;
         } else {
-          return x(parseDate(d.date))+15;
+          return x(parseDate(d.date))+25;
         }
       })
       .attr('y', function(d,i) {return y(i+1)+5;})
@@ -248,6 +249,7 @@ function draw_pag(data, class_name, show_text) {
   circle.enter()
     .append('a')
     .attr('class', class_name)
+    .attr('target', '_blank')
     .attr('xlink:href', function(d) {return d.url;})
     .append('circle')
     .attr('class', class_name)
@@ -338,7 +340,7 @@ function show_all() {
   $('#numbers').show();
 }
 
-d3.json('../data/papers.json', function(papers) {
+d3.json('./data/papers.json', function(papers) {
 
   // Sort papers by date
   papers.sort(function(a,b) {

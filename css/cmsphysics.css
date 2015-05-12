@@ -7,18 +7,24 @@ body {
 }
 
 #controls {
-  margin-left: 150px;
+  padding-left: 100px;
+  padding-top: 10px;
 }
 
 #numbers {
-  padding-left: 150px;
+  padding-left: 275px;
   font: bold 14px Helvetica;
 }
 
-text.sus, text.bph, text.top,
+text.sus, text.top,
 text.hin, text.hig, text.fwd,
 text.smp, text.b2g {
  fill: #666;
+}
+
+text.bph {
+  fill: #666;
+  font: bold 10px Helvetica;
 }
 
 text.exo, text.smp {
