@@ -164,9 +164,15 @@ path.det, path.detall {
   stroke: #BDEDFF;
 }
 
-.btn {
+.btn-primary {
   font: bold 14px Helvetica;
   background-color: #f9f9f9;
+  border-color: #cccccc;
+}
+
+.btn-primary:hover, .btn-primary.active{
+  background-color: #e0e0e0;
+  border-color: #000000;
 }
 
 .yaxis path, .xaxis path,

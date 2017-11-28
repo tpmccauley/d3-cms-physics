@@ -1,12 +1,15 @@
-<html>
-
+<!DOCTYPE html>
 <head>
+
+<meta charset=utf-8>
+
 <!-- thomas.mccauley@cern.ch -->
 <title>CMS Physics Timeline</title>
 <script type="text/javascript" src="./js/modernizr.custom.57713.js"></script>
 <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="./js/bootstrap.min.js"></script>
 <script type="text/javascript" src="./js/d3.v2.min.js"></script>
+<script type="text/javascript" src="./js/cmsphysics.js"></script>
 
 <link type="text/css" href="./css/bootstrap.min.css" rel="stylesheet">
 <link type="text/css" href="./css/cmsphysics.css" rel="stylesheet">
@@ -43,20 +46,20 @@
 </div>
 <div id="controls" class="svg">
   <p>
-    <button type="button" data-toggle="button" class="btn btn-default active" id="all" onclick="show_all();">Show all</button>
-    <button type="button" data-toggle="button" class="btn btn-default" id="total" onclick="show_total();">Total</button>
-    <button type="button" data-toggle="button" class="btn btn-default" id="exo" onclick="show_exo();">Exotica</button>
-    <button type="button" data-toggle="button" class="btn btn-default" id="smp" onclick="show_smp();">Standard Model</button>
-    <button type="button" class="btn btn-default" id="sus" onclick="show_sus();">Supersymmetry</button>
-    <button type="button" class="btn btn-default" id="hig" onclick="show_hig();">Higgs</button>
-    <button type="button" class="btn btn-default" id="top" onclick="show_top();">Top Physics</button>
+    <button type="button" class="btn btn-primary active" id="all">Show all</button>
+    <button type="button" class="btn btn-primary" id="total">Total</button>
+    <button type="button" class="btn btn-primary" id="exo">Exotica</button>
+    <button type="button" class="btn btn-primary" id="smp">Standard Model</button>
+    <button type="button" class="btn btn-primary" id="sus">Supersymmetry</button>
+    <button type="button" class="btn btn-primary" id="hig">Higgs</button>
+    <button type="button" class="btn btn-primary" id="top">Top Physics</button>
   </p>
   <p>
-    <button type="button" class="btn btn-default" id="hin" onclick="show_hin();">Heavy Ion</button>
-    <button type="button" class="btn btn-default" id="bph" onclick="show_bph();">B Physics</button>
-    <button type="button" class="btn btn-default" id="fwd" onclick="show_fwd();">Forward Physics</button>
-    <button type="button" class="btn btn-default" id="b2g" onclick="show_b2g();">Beyond 2 Generations</button>
-    <button type="button" class="btn btn-default" id="det" onclick="show_det();">Detector Performance</button>
+    <button type="button" class="btn btn-primary" id="hin">Heavy Ion</button>
+    <button type="button" class="btn btn-primary" id="bph">B Physics</button>
+    <button type="button" class="btn btn-primary" id="fwd">Forward Physics</button>
+    <button type="button" class="btn btn-primary" id="b2g">Beyond 2 Generations</button>
+    <button type="button" class="btn btn-primary" id="det">Detector Performance</button>
     </p>
 </div>
 <div id="numbers" class="svg">
@@ -65,6 +68,11 @@
     as of <span id="date"></span>
 </div>
 <div id="plot" class="col-lg-9"></div>
-<script type="text/javascript" src="./js/cmsphysics.js"></script>
+
+<script>
+  $(function() {
+    cms.init();
+  });
+</script>
+
 </body>
-</html>
