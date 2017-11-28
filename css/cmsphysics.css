@@ -18,7 +18,7 @@ body {
 
 text.sus, text.top,
 text.hin, text.hig, text.fwd,
-text.smp, text.b2g {
+text.smp, text.b2g, text.det {
  fill: #666;
 }
 
@@ -146,10 +146,22 @@ circle.b2g, circle.b2gall, #b2g {
   color: #bcbd22;
 }
 
+circle.det, circle.detall, #det {
+  fill: #E0FFFF;
+  stroke: #ADDFFF;
+  color: #ADDFFF;
+}
+
 path.b2g, path.b2gall {
   fill:none;
   stroke-width: 2;
   stroke: #dbdb8d;
+}
+
+path.det, path.detall {
+  fill:none;
+  stroke-width: 2;
+  stroke: #BDEDFF;
 }
 
 .btn {

@@ -24,9 +24,7 @@ oline = '['
 pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
         'FWD','SUS','BPH',
-        'SMP', 'FSQ', 'B2G', 'GEN',
-        'MUO', 'EGM', 'TAU',
-        'JME', 'TRK', 'BTV', 'DET' ]
+        'SMP', 'FSQ', 'B2G', 'GEN']
 
 arxivs = []
 
@@ -88,9 +86,6 @@ for pag in pags:
         try:
             arxiv = result["037__a"][0]
 
-            if arxiv == 'arXiv:1005.5332':  # the cosmic-ray paper
-                continue
-
             if arxivs.count(arxiv) == 1:
                 print 'Found a duplicate!', arxiv, url
                 obj['duplicate'] = 'true'
@@ -141,14 +136,6 @@ sci['url'] = 'https://cds.cern.ch/record/1529911/'
 sci['type'] = 'HIG'
 sci['duplicate'] = 'false'
 oline += str(json.dumps(sci,sort_keys=True))+','
-
-#det = {}
-#det['title'] = 'The CMS Experiment at the CERN LHC'
-#det['date'] = '09-01-2008'
-#det['url'] = 'https://cds.cern.ch/record/1129810'
-#det['type'] = 'DET'
-#det['duplicate'] = 'false'
-#oline += str(json.dumps(det,sort_keys=True))+','
 
 oline = oline[:-1]
 oline += ']'

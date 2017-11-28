@@ -22,7 +22,7 @@ var m = {top:50, right:50, bottom:75, left:50},
     yaxis = d3.svg.axis().scale(y).orient('left').tickSize(5.0).tickSubdivide(true).tickFormat(d3.format('d')),
     svg, yrule, max_length, papers_length, duplicates;
 
-var all_papers, qcds, bphs, ewks, tops, higs, suss, exos, hins, fwds, smps, b2gs;
+var all_papers, qcds, bphs, ewks, tops, higs, suss, exos, hins, fwds, smps, b2gs, dets;
 var showing = 'all';
 
 function text_mouseover() {
@@ -317,6 +317,7 @@ function show_hin() { show(hins, 'hin', true); }
 function show_fwd() { show(fwds, 'fwd', true); }
 function show_smp() { show(smps, 'smp', true); }
 function show_b2g() { show(b2gs, 'b2g', true); }
+function show_det() { show(dets, 'det', true); }
 
 function show_all() {
   handle_active('all');
@@ -325,15 +326,16 @@ function show_all() {
   y.domain([0, max_length]);
   svg.select('g.yaxis').transition().duration(1000).call(yaxis);
 
-  draw_all(bphs, 'bph');
-  draw_all(tops, 'top');
-  draw_all(higs, 'hig');
-  draw_all(suss, 'sus');
-  draw_all(exos, 'exo');
+  draw_all(dets, 'det');
   draw_all(hins, 'hin');
   draw_all(fwds, 'fwd');
+  draw_all(bphs, 'bph');
   draw_all(smps, 'smp');
+  draw_all(exos, 'exo');
   draw_all(b2gs, 'b2g');
+  draw_all(suss, 'sus');
+  draw_all(tops, 'top');
+  draw_all(higs, 'hig');
 
   $('#number').text(papers_length - duplicates);
   $('#date').text(date_updated);
@@ -357,11 +359,11 @@ d3.json('./data/papers.json', function(papers) {
   suss = papers.filter(function(p) {return p.type=='SUS';}),
   exos = papers.filter(function(p) {return p.type=='EXO';}),
   hins = papers.filter(function(p) {return p.type=='HIN';}),
-  fwds = papers.filter(function(p) {return (p.type=='FWD' || p.type=='FSQ');}),
+  fwds = papers.filter(function(p) {return (p.type=='FWD' || p.type=='FSQ' || p.type=='GEN');}),
   smps = papers.filter(function(p) {return (p.type=='SMP' || p.type=='QCD' || p.type=='EWK');}),
   b2gs = papers.filter(function(p) {return p.type=='B2G';});
-
-  max_length = d3.max([bphs,tops,higs,suss,exos,hins,fwds,smps,b2gs], function(p) {return p.length;});
+  dets = papers.filter(function(p) {return (p.type=='MUO' || p.type=='EGM' || p.type=='TAU' || p.type=='JME' || p.type=='TRK' || p.type=='BTV' );}),
+      max_length = d3.max([bphs,tops,higs,suss,exos,hins,fwds,smps,b2gs,dets], function(p) {return p.length;});
   duplicates = papers.filter(function(p) {return p.duplicate == 'true';}).length
 
   init();

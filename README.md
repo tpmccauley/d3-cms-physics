@@ -3,6 +3,8 @@ d3-cms-physics
 
 A d3 visualization of physics papers published by the CMS experiment at the LHC.
 
+http://cms-results.web.cern.ch/cms-results/public-results/publications-vs-time
+
 How?
 
 * First one must fetch the paper data from the CERN Document Server using ./data/get_cds_data_PAG.py
