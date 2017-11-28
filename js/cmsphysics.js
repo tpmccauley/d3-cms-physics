@@ -57,6 +57,20 @@ cms.filter = function(papers) {
 
 };
 
+cms.circle_mouseover = function() {
+  d3.select(this)
+  .transition()
+  .duration(500)
+  .attr('r', 20.0);
+}
+
+cms.circle_mouseout = function() {
+  d3.select(this)
+  .transition()
+  .duration(1000)
+  .attr('r', 8.0);
+}
+
 cms.show = function() {
 
   console.log(this.id);
@@ -80,8 +94,8 @@ cms.show = function() {
     .attr('cx', function(d) {return cms.xscale(cms.parse_date(d.date));})
     .attr('cy', function(d,i) {return cms.yscale(i+1);})
     .attr('r', 1e-6)
-    //.on('mouseout', circle_mouseout)
-    //.on('mouseover', circle_mouseover)
+    .on('mouseout', cms.circle_mouseout)
+    .on('mouseover', cms.circle_mouseover)
     .transition().delay(1000)
     .attr('r', 8.0)
     .attr('title', function(d) {return d.title;});
@@ -111,6 +125,7 @@ cms.init = function() {
       return (cms.parse_date(a.date)) - (cms.parse_date(b.date));
     });
 
+    cms.papers.total = papers;
     cms.filter(papers);
 
   });
@@ -167,6 +182,6 @@ cms.init = function() {
         return 'rotate(-65)'
       });
 
-  cms.yrule = cms.svg.selectAll('g.yrules').data(cms.y.ticks(10));
+  cms.yrule = cms.svg.selectAll('g.yrules').data(cms.yscale.ticks(10));
 
 };
