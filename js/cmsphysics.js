@@ -64,7 +64,7 @@ cms.show = function() {
   var data = cms.papers[this.id];
 
   // Rescale the numbers on the y axis
-  cms.y.domain([0, data.length]);
+  cms.yscale.domain([0, data.length]);
   cms.svg.select('g.yaxis').transition().duration(1000).call(cms.yaxis);
 
   var circle = cms.svg.selectAll('circle').data(data);
@@ -77,8 +77,8 @@ cms.show = function() {
     .attr('xlink:href', function(d) {return d.url;})
     .append('circle')
     .attr('class', class_name)
-    .attr('cx', function(d) {return cms.x(cms.parse_date(d.date));})
-    .attr('cy', function(d,i) {return cms.y(i+1);})
+    .attr('cx', function(d) {return cms.xscale(cms.parse_date(d.date));})
+    .attr('cy', function(d,i) {return cms.yscale(i+1);})
     .attr('r', 1e-6)
     //.on('mouseout', circle_mouseout)
     //.on('mouseover', circle_mouseover)
@@ -87,8 +87,8 @@ cms.show = function() {
     .attr('title', function(d) {return d.title;});
 
   circle.transition().delay(1000)
-    .attr('cx', function(d) {return cms.x(cms.parse_date(d.date));})
-    .attr('cy', function(d,i) {return cms.y(i+1);})
+    .attr('cx', function(d) {return cms.xscale(cms.parse_date(d.date));})
+    .attr('cy', function(d,i) {return cms.yscale(i+1);})
     .attr('r', 8.0)
     .attr('class', class_name)
     .attr('title', function(d) {return d.title;});
@@ -135,14 +135,17 @@ cms.init = function() {
   cms.end_date = new Date();
   cms.mid_date = new Date(0.5*(cms.end_date.getTime() + cms.start_date.getTime()));
 
-  var m = {top:50, right:50, bottom:75, left:50};
+  var m = {
+    top:50, right:50, bottom:75, left:50
+  };
   var w = 1062 - m.right - m.left;
   var h = 603 - m.top - m.bottom;
 
-  cms.x = d3.time.scale().domain([cms.start_date, cms.end_date]).range([0,w]);
-  cms.y = d3.scale.linear().range([h,0]);
-  cms.xaxis = d3.svg.axis().scale(cms.x).orient('bottom').tickSize(5.0).tickSubdivide(false).tickFormat(d3.time.format('%b %Y'));
-  cms.yaxis = d3.svg.axis().scale(cms.y).orient('left').tickSize(5.0).tickSubdivide(true).tickFormat(d3.format('d'));
+  cms.xscale = d3.scaleTime().domain([cms.start_date, cms.end_date]).range([0,w]);
+  cms.yscale = d3.scaleLinear().range([h,0]);
+
+  cms.xaxis = d3.axisBottom().scale(cms.xscale); //.tickSize(5.0).tickSubdivide(false).tickFormat(d3.timeFormat('%b %Y'));
+  cms.yaxis = d3.axisLeft().scale(cms.yscale); //.tickSize(5.0).tickSubdivide(true).tickFormat(d3.format('d'));
 
   cms.svg = d3.select('#plot').append('svg')
     .attr('width', w+m.right+m.left)
