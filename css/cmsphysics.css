@@ -16,20 +16,12 @@ body {
   font: bold 14px Helvetica;
 }
 
-text.sus, text.top,
-text.hin, text.hig, text.fwd,
-text.smp, text.b2g, text.det {
- fill: #666;
+text.title {
+  fill: #666;
 }
 
-text.bph {
-  fill: #666;
-  font: bold 10px Helvetica;
-}
-
-text.exo, text.smp {
-  fill: #666;
-  font: bold 8px Helvetica;
+#all {
+  color: #000;
 }
 
 circle.total, #total {
@@ -38,22 +30,10 @@ circle.total, #total {
 	color: #000;
 }
 
-path.total {
-  fill:none;
-  stroke-width: 2;
-  stroke: #ccc;
-}
-
 circle.exo, circle.exoall, #exo {
   fill: #aec7e8;
   stroke: #1f77b4;
   color: #1f77b4;
-}
-
-path.exo, path.exoall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #aec7e8;
 }
 
 circle.smp, circle.smpall, #smp {
@@ -62,22 +42,10 @@ circle.smp, circle.smpall, #smp {
   color: #ff7f0e;
 }
 
-path.smp, path.smpall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #ffbb78;
-}
-
 circle.sus, circle.susall, #sus {
   fill: #98df8a;
   stroke: #2ca02c;
   color: #2ca02c;
-}
-
-path.sus, path.susall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #98df8a;
 }
 
 circle.top, circle.topall, #top {
@@ -86,22 +54,10 @@ circle.top, circle.topall, #top {
   color: #9467bd;
 }
 
-path.top, path.topall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #c5b0d5;
-}
-
 circle.hin, circle.hinall, #hin {
   fill: #c49c94;
   stroke: #8c564b;
   color: #8c564b;
-}
-
-path.hin, path.hinall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #c49c94;
 }
 
 circle.hig, circle.higall, #hig {
@@ -110,34 +66,16 @@ circle.hig, circle.higall, #hig {
   color: #d62728;
 }
 
-path.hig, path.higall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #ff9896;
-}
-
 circle.bph, circle.bphall, #bph {
   fill: #f7b6d2;
   stroke: #e377c2;
   color:#e377c2;
 }
 
-path.bph, path.bphall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #f7b6d2;
-}
-
 circle.fwd, circle.fwdall, #fwd {
   fill: #c7c7c7;
   stroke: #7f7f7f;
   color: #7f7f7f;
-}
-
-path.fwd, path.fwdall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #c7c7c7;
 }
 
 circle.b2g, circle.b2gall, #b2g {
@@ -150,18 +88,6 @@ circle.det, circle.detall, #det {
   fill: #E0FFFF;
   stroke: #ADDFFF;
   color: #ADDFFF;
-}
-
-path.b2g, path.b2gall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #dbdb8d;
-}
-
-path.det, path.detall {
-  fill:none;
-  stroke-width: 2;
-  stroke: #BDEDFF;
 }
 
 .btn-primary {

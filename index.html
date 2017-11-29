@@ -46,20 +46,20 @@
 </div>
 <div id="controls" class="svg">
   <p>
-    <button type="button" class="btn btn-primary" id="all">Show all</button>
-    <button type="button" class="btn btn-primary" id="total">Total</button>
-    <button type="button" class="btn btn-primary" id="exo">Exotica</button>
-    <button type="button" class="btn btn-primary" id="smp">Standard Model</button>
-    <button type="button" class="btn btn-primary" id="sus">Supersymmetry</button>
-    <button type="button" class="btn btn-primary" id="hig">Higgs</button>
-    <button type="button" class="btn btn-primary" id="top">Top Physics</button>
+    <button type="button" class="btn btn-primary" id="all" onclick="cms.show_all();">Show all</button>
+    <button type="button" class="btn btn-primary" id="total" onclick="cms.show('total');">Total</button>
+    <button type="button" class="btn btn-primary" id="exo" onclick="cms.show('exo');">Exotica</button>
+    <button type="button" class="btn btn-primary" id="smp" onclick="cms.show('smp');">Standard Model</button>
+    <button type="button" class="btn btn-primary" id="sus" onclick="cms.show('sus');">Supersymmetry</button>
+    <button type="button" class="btn btn-primary" id="hig" onclick="cms.show('hig');">Higgs</button>
+    <button type="button" class="btn btn-primary" id="top" onclick="cms.show('top');">Top Physics</button>
   </p>
   <p>
-    <button type="button" class="btn btn-primary" id="hin">Heavy Ion</button>
-    <button type="button" class="btn btn-primary" id="bph">B Physics</button>
-    <button type="button" class="btn btn-primary" id="fwd">Forward Physics</button>
-    <button type="button" class="btn btn-primary" id="b2g">Beyond 2 Generations</button>
-    <button type="button" class="btn btn-primary" id="det">Detector Performance</button>
+    <button type="button" class="btn btn-primary" id="hin" onclick="cms.show('hin');">Heavy Ion</button>
+    <button type="button" class="btn btn-primary" id="bph" onclick="cms.show('bph');">B Physics</button>
+    <button type="button" class="btn btn-primary" id="fwd" onclick="cms.show('fwd');">Forward Physics</button>
+    <button type="button" class="btn btn-primary" id="b2g" onclick="cms.show('b2g');">Beyond 2 Generations</button>
+    <button type="button" class="btn btn-primary" id="det" onclick="cms.show('det');">Detector Performance</button>
     </p>
 </div>
 <div id="numbers" class="svg">
@@ -72,6 +72,7 @@
 <script>
   $(function() {
     cms.init();
+    //cms.show_all();
   });
 </script>
 
