@@ -232,6 +232,12 @@ cms.init = function() {
 
   console.log('CMS Physics Timeline v'+cms.version);
 
+  d3.json('./data/date.json', function(date) {
+
+    cms.date_updated = date.Y + '-' + date.M + '-' + date.D;
+
+  });
+
   d3.json('./data/papers.json', function(papers) {
 
     papers.sort(function(a,b) {
@@ -241,57 +247,58 @@ cms.init = function() {
     cms.npapers = papers.length;
     cms.filter_papers(papers);
 
+    cms.start_date = new Date(2010,0,0)
+    cms.end_date = new Date();
+    cms.mid_date = new Date(0.5*(cms.end_date.getTime() + cms.start_date.getTime()));
+
+    var m = {
+      top:50, right:50, bottom:75, left:50
+    };
+
+    var w = 1062 - m.right - m.left;
+    var h = 603 - m.top - m.bottom;
+
+    cms.xscale = d3.scaleTime().domain([cms.start_date, cms.end_date]).range([0,w]);
+    cms.yscale = d3.scaleLinear().range([h,0]);
+
+    cms.xaxis = d3.axisBottom().scale(cms.xscale);
+    //cms.xaxis.tickSize(5.0).tickFormat(d3.timeFormat('%b %Y'));
+    cms.yaxis = d3.axisLeft().scale(cms.yscale);
+
+    cms.svg = d3.select('#plot').append('svg')
+      .attr('width', w+m.right+m.left)
+      .attr('height', h+m.top+m.bottom)
+      .append('svg:g')
+      .attr('transform', 'translate('+m.bottom+','+m.top+')');
+
+    cms.svg.append('g')
+      .attr('class', 'yaxis')
+      .call(cms.yaxis);
+
+    cms.svg.append('g')
+      .attr('class', 'xaxis')
+      .attr('transform', 'translate(0,'+h+')')
+      .call(cms.xaxis)
+        .selectAll('text')
+        .style('text-anchor', 'end')
+        .attr('transform', function(d) {
+          return 'rotate(-65)'
+        });
+
+    cms.xgrid = d3.axisBottom().tickFormat('').tickSize(h).scale(cms.xscale);
+
+    cms.svg.append('g')
+       .attr('class', 'xgrid')
+       .call(cms.xgrid);
+
+    cms.svg.append('text')
+      .attr('class', 'title')
+      .attr('x', 20)
+      .attr('y', 15)
+      .attr('font-size', 14);
+
+    cms.show_all();
+
   });
-
-  d3.json('./data/date.json', function(date) {
-
-    cms.date_updated = date.Y + '-' + date.M + '-' + date.D;
-
-  });
-
-  cms.start_date = new Date(2010,0,0)
-  cms.end_date = new Date();
-  cms.mid_date = new Date(0.5*(cms.end_date.getTime() + cms.start_date.getTime()));
-
-  var m = {
-    top:50, right:50, bottom:75, left:50
-  };
-
-  var w = 1062 - m.right - m.left;
-  var h = 603 - m.top - m.bottom;
-
-  cms.xscale = d3.scaleTime().domain([cms.start_date, cms.end_date]).range([0,w]);
-  cms.yscale = d3.scaleLinear().range([h,0]);
-
-  cms.xaxis = d3.axisBottom().scale(cms.xscale); //.tickSize(5.0).tickSubdivide(false).tickFormat(d3.timeFormat('%b %Y'));
-  cms.yaxis = d3.axisLeft().scale(cms.yscale); //.tickSize(5.0).tickSubdivide(true).tickFormat(d3.format('d'));
-
-  cms.svg = d3.select('#plot').append('svg')
-    .attr('width', w+m.right+m.left)
-    .attr('height', h+m.top+m.bottom)
-    .append('svg:g')
-    .attr('transform', 'translate('+m.bottom+','+m.top+')');
-
-  cms.svg.append('g')
-    .attr('class', 'yaxis')
-    .call(cms.yaxis);
-
-  cms.svg.append('g')
-    .attr('class', 'xaxis')
-    .attr('transform', 'translate(0,'+h+')')
-    .call(cms.xaxis)
-      .selectAll('text')
-      .style('text-anchor', 'end')
-      .attr('transform', function(d) {
-        return 'rotate(-65)'
-      });
-
-  cms.svg.append('text')
-    .attr('class', 'title')
-    .attr('x', 20)
-    .attr('y', 15)
-    .attr('font-size', 14);
-
-  cms.yrule = cms.svg.selectAll('g.yrules').data(cms.yscale.ticks(10));
 
 };

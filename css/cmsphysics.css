@@ -20,6 +20,14 @@ text.title {
   fill: #666;
 }
 
+.xgrid line {
+  stroke: #ddd;
+}
+
+.xgrid path {
+  stroke-width: 0;
+}
+
 #all {
   color: #000;
 }
