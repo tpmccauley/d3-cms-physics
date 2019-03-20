@@ -124,7 +124,7 @@ cms.split_title = function(title) {
 cms.circle_mouseover = function(d) {
 
   d3.select(this).transition().duration(500).attr('r', 20.0);
-
+/*
   var st = cms.split_title(d.title);
 
   var text = cms.svg.select('text.title')
@@ -134,7 +134,7 @@ cms.circle_mouseover = function(d) {
     .attr('x', 20)
     .attr('dy', 20)
     .text(st[1]);
-
+*/
 };
 
 cms.circle_mouseout = function() {
@@ -146,24 +146,30 @@ cms.circle_mouseout = function() {
 
 };
 
+cms.clicked = function(d) {
+
+   console.log('clicked', d.url);
+   window.open(d.url,'_blank');
+
+};
+
 cms.make_circles = function(cn, circle) {
 
-  circle.enter()
-    .append('a')
-    .attr('class', cn)
-    .attr('title', function(d) {return d.title;})
-    .attr('target', '_blank')
-    .attr('xlink:href', function(d) {return d.url;})
-    .append('circle')
+  
+  var circleEnter = circle.enter()
+  .append('circle')
     .on('mouseout', cms.circle_mouseout)
     .on('mouseover', cms.circle_mouseover)
+    .on('click', cms.clicked)
     .attr('title', function(d) {return d.title;})
     .attr('class', cn)
     .attr('cx', function(d) {return cms.xscale(cms.parse_date(d.date));})
     .attr('cy', function(d,i) {return cms.yscale(i+1);})
-    .attr('r', 1e-6)
-    .transition().delay(1000)
     .attr('r', 8.0);
+
+  circleEnter.append('title');
+  circle.merge(circleEnter)
+    .select('title').text(function(d) {return d.title;});
 
   circle.transition().delay(1000)
     .attr('cx', function(d) {return cms.xscale(cms.parse_date(d.date));})
