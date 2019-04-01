@@ -279,12 +279,13 @@ cms.init = function() {
 
     cms.svg.append('g')
       .attr('class', 'yaxis')
-      .call(cms.yaxis);
+	.call(cms.yaxis).attr('font-size', 12);
 
     cms.svg.append('g')
       .attr('class', 'xaxis')
       .attr('transform', 'translate(0,'+h+')')
       .call(cms.xaxis)
+        .attr('font-size', 12)
         .selectAll('text')
         .style('text-anchor', 'end')
         .attr('transform', function(d) {
