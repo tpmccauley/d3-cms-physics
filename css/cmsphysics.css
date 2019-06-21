@@ -93,9 +93,9 @@ circle.b2g, circle.b2gall, #b2g {
 }
 
 circle.det, circle.detall, #det {
-  fill: #E0FFFF;
-  stroke: #ADDFFF;
-  color: #ADDFFF;
+  fill: #9edae5;
+  stroke: #17becf;
+  color: #17becf;
 }
 
 .btn-primary {
