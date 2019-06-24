@@ -24,8 +24,8 @@ oline = '['
 pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
         'FWD','SUS','BPH',
-        'SMP', 'FSQ', 'B2G', 'GEN',
-        'MUO', 'EGM', 'TAU',
+        'SMP', 'FSQ', 'B2G', 'PPS', 'GEN',
+        'MUO', 'EGM', 'TAU', 'PRF', 'TRG',
         'JME', 'TRK', 'BTV', 'DET' ]
 
 arxivs = []
@@ -108,18 +108,27 @@ for pag in pags:
             obj['title'] = unicodedata.normalize('NFKD',title)
 
         d = string.split(str(date))
-
+        if len(d) == 1:
+            print string
+            d = date.split('-')
+            print date, d, d[0], d[1], d[2]
+# ghm 2/2019
+        ii = 0
+        jj = 2
+        if int(d[0]) > 2000 :
+            ii = 2
+            jj = 0       
         try:
-            obj['date'] = d[0]+'-'+str(month[d[1]])+'-'+d[2]
+            obj['date'] = d[ii]+'-'+str(month[d[1]])+'-'+d[jj]
         except KeyError:
-            print 'Caught KeyError with', date, 'but all is well!'
-            obj['date'] = d[0]+'-'+str(int(d[1]))+'-'+d[2]
+            print 'Caught KeyError with', d[ii]+' '+d[1]+' '+d[jj], 'but all is well!'
+            obj['date'] = d[ii]+'-'+str(int(d[1]))+'-'+d[jj]
         except IndexError:
             # good grief, why is the date format not the same?
-            print 'Caught IndexError with', date, 'but all is well!'
+            print 'Caught IndexError with', d[ii]+' '+d[1]+' '+d[jj], 'but all is well!'
             d = string.split(str(date), '-')
             m = int(d[1])
-            obj['date'] = d[0]+'-'+str(m)+'-'+d[2]
+            obj['date'] = d[ii]+'-'+str(m)+'-'+d[jj]
 
         obj['url'] = str(url)
         obj['type'] = str(pag)
@@ -129,6 +138,7 @@ for pag in pags:
 print total, 'papers in total'
 print len(arxivs)
 print '+1 HIG paper (the Science paper)'
+print '+1 TOP paper (the ATLAS+CMS paper)'
 
 # What's this?
 # Well, the Higgs Science paper does not seem to have a
@@ -139,6 +149,14 @@ sci['title'] = 'A New Boson with a Mass of 125 GeV Observed with the CMS Experim
 sci['date'] = '21-12-2012'
 sci['url'] = 'https://cds.cern.ch/record/1529911/'
 sci['type'] = 'HIG'
+sci['duplicate'] = 'false'
+oline += str(json.dumps(sci,sort_keys=True))+','
+
+sci = {}
+sci['title'] = 'Combinations of single-top-quark production cross-section measurements and ${|f_{\rm LV}{V_{\mathrm{tb}}} |} $ determinations at $\sqrt{s} =$ 7 and 8 TeV with the ATLAS and CMS experiments'
+sci['date'] = '15-2-2019'
+sci['url'] = 'https://cds.cern.ch/record/2660214/'
+sci['type'] = 'TOP'
 sci['duplicate'] = 'false'
 oline += str(json.dumps(sci,sort_keys=True))+','
 
