@@ -24,8 +24,8 @@ oline = '['
 pags = ['QCD','EWK','HIG',
         'TOP','HIN','EXO',
         'FWD','SUS','BPH',
-        'SMP', 'FSQ', 'B2G', 'GEN',
-        'MUO', 'EGM', 'TAU',
+        'SMP', 'FSQ', 'B2G', 'PPS', 'GEN',
+        'MUO', 'EGM', 'TAU', 'PRF', 'TRG',
         'JME', 'TRK', 'BTV', 'DET' ]
 
 arxivs = []

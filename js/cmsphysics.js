@@ -84,7 +84,7 @@ cms.filter_papers = function(papers) {
   }
 
   cms.papers.det = papers.filter(function(p) {
-    return (p.type =='MUO' || p.type =='EGM' || p.type =='TAU' || p.type =='JME' || p.type =='TRK' || p.type =='BTV');
+    return (p.type =='MUO' || p.type =='EGM' || p.type =='TAU' || p.type =='JME' || p.type =='TRK' || p.type =='BTV' || p.type =='TRG' || p.type =='PRF');
   });
 
   if ( cms.papers.det.length > ml ) {
